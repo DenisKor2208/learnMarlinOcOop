@@ -1,5 +1,5 @@
 <?php
-//начало
+//
 class Database {
     private static $instance = null;
     private $pdo, $query, $error = false, $results, $count;
