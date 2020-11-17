@@ -58,6 +58,32 @@ class Database {
         return $this->count;
     }
 
+    public function get($table, $where = []) { //второй аргумент типа массив и принимает только массив
+        return $this->action('SELECT *', $table, $where);
+    }
+
+    public function delete($table, $where = []) {
+        return $this->action('DELETE', $table, $where);
+    }
+
+    public function action($action, $table, $where = []) {
+
+        $operators = ['=', '>', '<', '>=', '<='];
+
+        if(count($where) === 3) {
+            $field = $where[0];
+            $operator = $where[1];
+            $value = $where[2];
+
+            if(in_array($operator, $operators)) {
+                $sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
+                if(!$this->query($sql, [$value])->error()) { //true если нету ошибок
+                    return $this;
+                }
+            }
+        }
+        return false;
+    }
 
 
 
@@ -66,6 +92,4 @@ class Database {
 
 
 }
-
-
 ?>
