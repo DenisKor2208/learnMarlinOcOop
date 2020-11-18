@@ -3,10 +3,14 @@
 require_once 'Database.php';
 
 //$users = Database::getInstance()->query("SELECT * FROM users WHERE username IN(?, ?)", ['John Doe', 'Jane Koe']); //выполняем запросы через этот метод напрямую
-$users = Database::getInstance()->get('users', ['username', '=', 'Jane Koe']); //это полноценная обертка
+//$users = Database::getInstance()->get('users', ['username', '=', 'Jane Koe']); //это полноценная обертка
+//Database::getInstance()->delete('users', ['username', '=', 'Jane Koe']);
 
-/*Database::getInstance()->delete('users', ['username', '=', 'marlin']);*/
-
+Database::getInstance()->insert('users', [
+    'username' => 'Denis Korotin',
+    'password' => 'password3'
+]);
+/*
 if ($users->error()){
     echo "we have an error";
 }else {
@@ -14,6 +18,6 @@ if ($users->error()){
         echo $user->username . '<br>';
     }
 }
-
+*/
 
 ?>

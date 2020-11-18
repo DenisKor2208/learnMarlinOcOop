@@ -85,8 +85,39 @@ class Database {
         return false;
     }
 
+    public function insert($table, $fields = []) { //суть метода insert это подготовить запрос который уже передается методу query
 
+        $values = '';
+        foreach ($fields as $field) {
+            $values .= "?,";
+        }
+        $values = rtrim($values, ',');
 
+        $sql = "INSERT INTO {$table} (" . '`' . implode('`, `', array_keys($fields)) . '`' . ") VALUES ({$values})"; //особое внимание в этой строке стоит уделить backtick - `
+
+        if(!$this->query($sql, $fields)->error()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function update($table, $id, $fields = []) {
+
+        $set = '';
+        foreach($fields as $key => $field) {
+            $set .= "{$key} = ?,"; // username = ?, password = ?,
+        }
+
+        $set = rtrim($set, ','); // username = ?, password = ?
+
+        $sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
+
+        if(!$this->query($sql, $fields)->error()){
+            return true;
+        }
+
+        return false;
+    }
 
 
 
