@@ -1,8 +1,23 @@
 <?php
 
-require_once 'Database.php';
+require_once "Database.php";
+require_once "Config.php";
 
-//$users = Database::getInstance()->query("SELECT * FROM users WHERE username IN(?, ?)", ['John Doe', 'Jane Koe']); //выполняем запросы через этот метод напрямую
+$GLOBALS['config'] = [ /* Глобальный массив конфигураций для всего приложения */
+    'mysql' => [
+        'host' => 'localhost',
+        'username' => 'root',
+        'password' => 'root',
+        'database' => 'edu_marlin',
+        'something' => [
+            'no' => 'yes'
+        ]
+    ]
+];
+
+//echo Config::get('mysql.host');
+
+$users = Database::getInstance()->query("SELECT * FROM users WHERE username IN(?, ?)", ['John Doe', 'Jane Koe']); //выполняем запросы через этот метод напрямую
 //$users = Database::getInstance()->get('users', ['username', '=', 'Jane Koe']); //это полноценная обертка
 //Database::getInstance()->delete('users', ['username', '=', 'Jane Koe']);
 /*Database::getInstance()->insert('users', [
@@ -27,7 +42,7 @@ Database::getInstance()->update('users', $id, [
 
 
 
-/*
+
 if ($users->error()){
     echo "we have an error";
 }else {
@@ -35,6 +50,6 @@ if ($users->error()){
         echo $user->username . '<br>';
     }
 }
-*/
+
 
 ?>

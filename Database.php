@@ -10,7 +10,7 @@ class Database {
 
     private function __construct() { //так как этот метод/конструктор приватный, то доступ к нему возможен только в этом классе
         try {
-            $this->pdo = new PDO('mysql:host=localhost;dbname=edu_marlin', 'root', 'root');
+            $this->pdo = new PDO('mysql:host=' . Config::get('mysql.host') . ';dbname=' . Config::get('mysql.database'), Config::get('mysql.username'), Config::get('mysql.password'));
         } catch (PDOException $exception) {
             die($exception->getMessage());
         }
