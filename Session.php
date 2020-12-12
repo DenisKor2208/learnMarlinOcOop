@@ -18,4 +18,14 @@ class Session {
     public static function get($name) { //получить значение переданного ключа из сессии
         return $_SESSION[$name];
     }
+
+    public static function flash($name, $string = '') { //работа с flash сообщением
+        if(self::exists($name) && self::get($name) !== '') { //если ключ в массиве сессии с переданным именем существует и он не пустой, то получаем значение этого ключа; удаляем ключ со значением из сессии; возвращаем значение этого ключа
+            $session = self::get($name);
+            self::delete($name);
+            return $session;
+        } else {
+            self::put($name, $string); //иначе создем в сессии ключ с переданным именем и задаем переданное значение этому ключу
+        }
+    }
 }

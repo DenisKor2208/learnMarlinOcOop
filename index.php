@@ -47,7 +47,12 @@ if (Input::exists()) { // exists - проверка была ли отправл
         ]);
 
         if ($validation->passed()) {
-            echo 'passed';
+
+            //Database
+
+            Session::flash('success', 'register success'); //записываем значение(2 аргумент) в ключ сессии(1 аргумент)
+            //header('Location: /test.php');
+
         } else {
             foreach ($validation->errors() as $error) {
                 echo $error . "<br>";
@@ -97,6 +102,7 @@ if ($users->error()){
 <!-- Форма для проверки работы Validation и Input -->
 <!-- Наша форма хранит свои данные в глобальном массиве POST -->
 <form action="" method="post"> <!-- action отправляет на текущую страницу на которой размещена форма -->
+    <?php echo Session::flash('success'); ?> <!-- записываем значение(2 аргумент) в ключ сессии(1 аргумент) -->
     <div class="field">
         <label for="username">Username</label>
         <input type="text" name="username" value="<?php echo Input::get('username')?>"> <!-- Input занимается данными которые вводятся через форму -->
