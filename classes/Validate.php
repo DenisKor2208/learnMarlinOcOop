@@ -25,23 +25,28 @@ class Validate {
                             if (strlen($value) < $rule_value) { //strlen($value) - кол-во символов в значении $value
                                 $this->addError("{$item} must be a minimum of {$rule_value} characters.");
                             }
-                            break;
+                        break;
                         case 'max':
                             if (strlen($value) > $rule_value) {
                                 $this->addError("{$item} must be a maximum of {$rule_value} characters.");
                             }
-                            break;
+                        break;
                         case 'matches':
                             if ($value != $source[$rule_value]) { // если $value (значение 'password_again' из массива $_POST) не равняется $rule_value(значение поля 'password' из массива $_POST)
                                 $this->addError("{$rule_value} must match {$item}"); // то выводим ошибку
                             }
-                            break;
+                        break;
                         case 'unique':
                             $check = $this->db->get($rule_value, [$item, '=', $value]);// $rule_value - из какой таблицы в БД?; $item - поле username и в БД будут просматриваться значения поля username; $value - значение поля username из массива $_POST
                             if ($check->count()) { //проверка на кол-во результатов из БД по введенному в форму поля username значению
                                 $this->addError("{$item} already exist."); //если результатов будет больше нуля, то ошибка - значение не уникальное
                             }
-                            break;
+                        break;
+                        case 'email':
+                            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) { //если не соответствует правилу валидации и возвращает false, до добавляем ошибку
+                                $this->addError("{$item} is not an email.");
+                            }
+                        break;
                     }
                 }
             }
