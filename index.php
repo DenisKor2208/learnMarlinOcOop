@@ -7,6 +7,7 @@ require_once "Validate.php";
 require_once "Input.php";
 require_once "Token.php";
 require_once "Session.php";
+require_once "User.php";
 
 $GLOBALS['config'] = [ /* Глобальный массив конфигураций для всего приложения */
     'mysql' => [
@@ -47,8 +48,11 @@ if (Input::exists()) { // exists - проверка была ли отправл
         ]);
 
         if ($validation->passed()) {
-
             //Database
+            $user = new User();
+            $user->create(['username' => Input::get('username'),
+                           'password' => password_hash(Input::get('password'), PASSWORD_DEFAULT )
+                          ]);
 
             Session::flash('success', 'register success'); //записываем значение(2 аргумент) в ключ сессии(1 аргумент)
             //header('Location: /test.php');
