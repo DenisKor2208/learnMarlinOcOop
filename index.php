@@ -8,6 +8,7 @@ require_once "Input.php";
 require_once "Token.php";
 require_once "Session.php";
 require_once "User.php";
+require_once "Redirect.php";
 
 $GLOBALS['config'] = [ /* Глобальный массив конфигураций для всего приложения */
     'mysql' => [
@@ -55,7 +56,7 @@ if (Input::exists()) { // exists - проверка была ли отправл
                           ]);
 
             Session::flash('success', 'register success'); //записываем значение(2 аргумент) в ключ сессии(1 аргумент)
-            //header('Location: /test.php');
+            Redirect::to(404);
 
         } else {
             foreach ($validation->errors() as $error) {
