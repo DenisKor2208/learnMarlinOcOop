@@ -61,5 +61,8 @@ class User { //для регистрации пользователя
         return $this->isLoggedIn;
     }
 
+    public function logout() {
+        Session::delete($this->session_name);
+    }
 
 }
