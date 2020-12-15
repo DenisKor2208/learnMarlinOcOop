@@ -39,7 +39,7 @@ if (Input::exists()) { // exists - проверка была ли отправл
             ]);
 
             Session::flash('success', 'register success'); //записываем значение(2 аргумент) в ключ сессии(1 аргумент)
-            //Redirect::to(404);
+            Redirect::to('login.php');
 
         } else {
             foreach ($validation->errors() as $error) {

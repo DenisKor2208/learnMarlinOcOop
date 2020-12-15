@@ -1,4 +1,9 @@
 <?php
+require_once 'init.php';
+
+//10-05
+
+var_dump(Session::get(Config::get('session.user_session')));
 
 //echo Config::get('mysql.host');
 
