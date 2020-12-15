@@ -1,9 +1,19 @@
 <?php
 require_once 'init.php';
 
-//10-05
+$user = new User; //получаем текущего залогиненного пользователя
+$anotherUser = new User(2); //получаем любого другого нужного нам пользователя
+//echo $user->data()->username;
+//echo $anotherUser->data()->username;
 
-var_dump(Session::get(Config::get('session.user_session')));
+if ($user->isLoggedIn()) {
+    echo "Hi, <a href='#'>{$user->data()->username}</a>";
+    echo "<p><a href='logout.php'>Logout</a></p>";
+} else {
+    echo "<a href='login.php'>Login</a> or <a href='register.php'>Register</a>";
+}
+
+//var_dump(Session::get(Config::get('session.user_session')));
 
 //echo Config::get('mysql.host');
 
