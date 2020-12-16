@@ -2,7 +2,7 @@
 require_once 'init.php';
 
 $user = new User; //получаем текущего залогиненного пользователя
-$anotherUser = new User(2); //получаем любого другого нужного нам пользователя
+//$anotherUser = new User(2); //получаем любого другого нужного нам пользователя
 //echo $user->data()->username;
 //echo $anotherUser->data()->username;
 

@@ -1,11 +1,13 @@
 <?php
 
 class User { //для регистрации пользователя
-    private $db, $data, $session_name, $isLoggedIn;
+    private $db, $data, $session_name, $isLoggedIn, $cookieName;
+// данные текущего пользователя хранятся в переменной $data
 
     public function __construct($user = null) {
         $this->db = Database::getInstance();
         $this->session_name = Config::get('session.user_session');
+        $this->cookieName = Config::get('cookie.cookie_name');
 
         if (!$user) { //Если $user(передается id) пустой, то выполняется код; получаем текущего залогиненного пользователя
             if (Session::exists($this->session_name)) { //проверка есть ли запись в сессии
@@ -13,8 +15,6 @@ class User { //для регистрации пользователя
 
                 if ($this->find($user)) {
                     $this->isLoggedIn = true;
-                } else {
-                    //logout
                 }
             }
         } else { //если вы передаем id(пользователя), то в таком случае мы его должны только найти
@@ -26,22 +26,39 @@ class User { //для регистрации пользователя
         $this->db->insert('users', $fields);
     }
 
-    public function login($email = null, $password = null) {
+    public function login($email = null, $password = null, $remember = false) {
 
-    if ($email) {
-        $user = $this->find($email);
+        if (!$email && !$password && $this->exists()) { //если мы не передали email и пароль и текущий пользователь существует
+            Session::put($this->session_name, $this->data()->id); //то просто записываем сессию текущему пользователю
+        } else {
+            $user = $this->find($email); //вытаскиваем пользователя(записываем пользователя в переменную $this->data)
+            if ($user) {
+                if (password_verify($password, $this->data()->password)) { //если переданный пароль соответствует тому который имеется в БД
+                    Session::put($this->session_name, $this->data()->id); //то записываем в сессию id пользователя
 
-        if ($user) {
-            if (password_verify($password, $this->data()->password)) { //если переданный пароль соответствует тому который имеется в БД
-                Session::put($this->session_name, $this->data()->id); //то записываем в сессию id пользователя
-                return true;
+                    if ($remember) { //выполнение логики по нажатии на кнопку 'Remember me'
+                        $hash = hash('sha256', uniqid()); //генерируется значение hash
+
+                        $hashCheck = $this->db->get('user_sessions', ['user_id', '=', $this->data()->id]); //пытаемся найти в БД текущий hash пользователя
+
+                        if (!$hashCheck->count()) { //если нет найденной записи
+                            $this->db->insert('user_sessions', [
+                                'user_id' => $this->data()->id, //id пользователя
+                                'hash' => $hash //сгенерированный нами hash
+                            ]);
+                        } else {
+                            $hash = $hashCheck->first()->hash;
+                        }
+                        Cookie::put($this->cookieName, $hash, Config::get('cookie.cookie_expiry')); //записываем сгенерированный $hash в cookie для пользователя
+                    }
+                    return true;
+                }
             }
         }
-    }
         return false;
     }
 
-    public function find($value = null) { //проверка на существование переданного email в базе
+    public function find($value = null) { //проверка на существование переданного id или email в базе // записываем данные пользователя в переменную $data
         if (is_numeric($value)){ //если значение цифровое, то значит это id
             $this->data = $this->db->get('users', ['id', '=', $value])->first(); //записываем найденную запись по переданному id в переменную data
         } else { //иначе это email
@@ -62,7 +79,36 @@ class User { //для регистрации пользователя
     }
 
     public function logout() {
-        Session::delete($this->session_name);
+        $this->db->delete('user_sessions', ['user_id', '=', $this->data()->id]); //удаляем cookie из БД
+        Session::delete($this->session_name); //удаляем сессию пользователя
+        Cookie::delete($this->cookieName); //устанавливаем отрицательное время жизни cookie у пользователя
     }
 
+    public function exists() { //проверка, существует ли текущий пользователь у нас в БД
+        return (!empty($this->data())) ? true : false;
+    }
+
+    public function update($fields = [], $id = null) {
+        if (!$id && $this->isLoggedIn()) {
+            $id = $this->data()->id;
+        }
+
+        $this->db->update('users', $id, $fields);
+    }
+
+    public function hasPermissions($key = null) {
+        if ($key) {
+            $group = $this->db->get('groups', ['id', '=', $this->data()->group_id]);
+
+            if ($group->count()) {
+                $permissions = $group->first()->permissions;
+                $permissions = json_decode($permissions, true);
+
+                if ($permissions[$key]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
