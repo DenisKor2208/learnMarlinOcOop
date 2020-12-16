@@ -89,14 +89,15 @@ class User { //для регистрации пользователя
     }
 
     public function update($fields = [], $id = null) {
-        if (!$id && $this->isLoggedIn()) {
+
+        if (!$id && $this->isLoggedIn()) { //если переданный id null и пользователь залогинен
             $id = $this->data()->id;
         }
 
         $this->db->update('users', $id, $fields);
     }
 
-    public function hasPermissions($key = null) {
+    /*public function hasPermissions($key = null) {
         if ($key) {
             $group = $this->db->get('groups', ['id', '=', $this->data()->group_id]);
 
@@ -110,5 +111,5 @@ class User { //для регистрации пользователя
             }
         }
         return false;
-    }
+    }*/
 }
