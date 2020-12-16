@@ -12,6 +12,11 @@ if ($user->isLoggedIn()) {
     echo "<p><a href='logout.php'>Logout</a></p>";
     echo "<p><a href='update.php'>Update profile</a></p>";
     echo "<p><a href='changepassword.php'>Change password</a></p>";
+
+    if ($user->hasPermissions('admin')) { //если роль админ, то выведется сообщение ниже
+        echo 'You are admin';
+    }
+
 } else {
     echo "<a href='login.php'>Login</a> or <a href='register.php'>Register</a>";
 }

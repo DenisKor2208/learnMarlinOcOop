@@ -97,19 +97,19 @@ class User { //для регистрации пользователя
         $this->db->update('users', $id, $fields);
     }
 
-    /*public function hasPermissions($key = null) {
-        if ($key) {
-            $group = $this->db->get('groups', ['id', '=', $this->data()->group_id]);
+    public function hasPermissions($key = null) { //работа с ролями и правами
+        if ($key) { //если $key имеет в себе значение
+            $group = $this->db->get('groups_users', ['id', '=', $this->data()->group_id]); //проверяем имеется ли в таблице group в поле id значение group_id текущего пользователя из таблицы users и выдергиваем найденную строчку
 
-            if ($group->count()) {
-                $permissions = $group->first()->permissions;
-                $permissions = json_decode($permissions, true);
+            if ($group->count()) { //проверяем было ли найдено что либо в таблице group
+                $permissions = $group->first()->permissions; //выхватываем из найденной строчки значение поля permissions из таблицы groups
+                $permissions = json_decode($permissions, true); //декодируем данные json в ассоциативный массив
 
-                if ($permissions[$key]) {
+                if ($permissions[$key]) { //если переданная нами роль найдена в поле permissions, то возвращаем true
                     return true;
                 }
             }
         }
         return false;
-    }*/
+    }
 }
