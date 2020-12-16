@@ -1,6 +1,7 @@
 <?php
 require_once 'init.php';
 
+echo Session::flash('success') . '<br>'; //вывод flash сообщения
 $user = new User; //получаем текущего залогиненного пользователя
 //$anotherUser = new User(2); //получаем любого другого нужного нам пользователя
 //echo $user->data()->username;
@@ -10,6 +11,7 @@ if ($user->isLoggedIn()) {
     echo "Hi, <a href='#'>{$user->data()->username}</a>";
     echo "<p><a href='logout.php'>Logout</a></p>";
     echo "<p><a href='update.php'>Update profile</a></p>";
+    echo "<p><a href='changepassword.php'>Change password</a></p>";
 } else {
     echo "<a href='login.php'>Login</a> or <a href='register.php'>Register</a>";
 }
